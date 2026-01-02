@@ -39,7 +39,7 @@ class DocumentClassification(BaseModel):
 # Defining the State for the Classification Workflow
 class TriageState(TypedDict):
     document_id: str
-    document_content: str | Document | list[str] | list[Document]# Raw Text or OCR Output
+    document_content: str | Document | list[str] | list[Document] | None# Raw Text or OCR Output
     document_type: str | None  # Optional
     confidence_score: float
     classification_details: dict  # Stores full reasoning

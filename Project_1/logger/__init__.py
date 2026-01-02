@@ -27,4 +27,3 @@ logger.setLevel(logging.INFO)
 logger.propagate = False
 logger.addHandler(handler)
 
-logger.info("Logger initialized")
