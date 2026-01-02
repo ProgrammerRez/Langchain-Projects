@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 
 list_of_directories = ['demo.py',
-                       'notebook/',
+                       'notebook/Prototyping.ipynb',
                        'app.py',
                        'main.py',
                        'state/state.py',
