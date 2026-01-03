@@ -1,5 +1,23 @@
-2026-01-02 21:35:25,641 - INFO - project_1 - ✅ Successfully Comepleted Request: Document_ID: doc_001
- Classification: invoice
-Confidence Score: 0.9
- Details: {'reasoning': "The presence of 'INVOICE #' and 'Total Amount' indicates that this is an invoice.", 'key_indicators': ['INVOICE #'], 'alternatives': ['contract', 'purchase_order'], 'pass': 1}
-2026-01-02 21:36:01,834 - INFO - project_1 - Done 
+2026-01-03 11:26:00,970 - INFO - project_1 - 🚀 Starting streaming server at 127.0.0.1:5000
+2026-01-03 11:26:08,274 - INFO - project_1 - 📥 Incoming streaming request | document_id=doc_1
+2026-01-03 11:26:08,512 - INFO - project_1 - 📄 Document split into 3 chunks
+2026-01-03 11:26:10,342 - INFO - project_1 - 📥 Incoming streaming request | document_id=doc_2
+2026-01-03 11:26:10,342 - INFO - project_1 - 📥 Incoming streaming request | document_id=doc_3
+2026-01-03 11:26:10,901 - INFO - project_1 - 📄 Document split into 12 chunks
+2026-01-03 11:26:13,468 - INFO - project_1 - ✅ Completed streaming for doc_1
+2026-01-03 11:26:32,793 - INFO - project_1 - ✅ Completed streaming for doc_3
+2026-01-03 11:28:13,310 - INFO - project_1 - 📄 Document split into 47 chunks
+2026-01-03 11:30:56,847 - INFO - project_1 - 🚀 Starting streaming server at 127.0.0.1:5000
+2026-01-03 11:33:39,837 - INFO - project_1 - 📥 Incoming streaming request | document_id=doc_2
+2026-01-03 11:33:39,840 - INFO - project_1 - 📥 Incoming streaming request | document_id=doc_1
+2026-01-03 11:33:39,840 - INFO - project_1 - 📥 Incoming streaming request | document_id=doc_3
+2026-01-03 11:33:40,196 - INFO - project_1 - 📄 Document split into 3 chunks
+2026-01-03 11:33:40,614 - INFO - project_1 - 📄 Document split into 12 chunks
+2026-01-03 11:33:43,890 - INFO - project_1 - ✅ Completed streaming for doc_1
+2026-01-03 11:34:03,912 - INFO - project_1 - ✅ Completed streaming for doc_3
+2026-01-03 11:35:46,722 - INFO - project_1 - 📄 Document split into 47 chunks
+2026-01-03 11:36:34,034 - ERROR - project_1 - ❌ Classification failed | (3221225786, 'Estimating resolution as 165 ObjectCache(00007ffbf3c26600)::~ObjectCache(): WARNING! LEAK! object 00000254b574e7e0 still has count 1 (id C:\\Program Files\\Tesseract-OCR/tessdata/eng.traineddatalstm-punc-dawg) ObjectCache(00007ffbf3c26600)::~ObjectCache(): WARNING! LEAK! object 00000254b6f93a50 still has count 1 (id C:\\Program Files\\Tesseract-OCR/tessdata/eng.traineddatalstm-word-dawg) ObjectCache(00007ffbf3c26600)::~ObjectCache(): WARNING! LEAK! object 00000254b6f939e0 still has count 1 (id C:\\Program Files\\Tesseract-OCR/tessdata/eng.traineddatalstm-number-dawg)')
+2026-01-03 11:36:57,760 - INFO - project_1 - 🚀 Starting server at 127.0.0.1:5000
+2026-01-03 11:37:05,448 - INFO - project_1 - 📄 Document classified | id=doc_1 | type=invoice | confidence=0.900 | ambiguous=False
+2026-01-03 11:38:57,712 - INFO - project_1 - 📄 Document classified | id=doc_2 | type=purchase_order | confidence=0.900 | ambiguous=False
+2026-01-03 11:39:00,099 - INFO - project_1 - 📄 Document classified | id=doc_3 | type=medical_record | confidence=0.900 | ambiguous=False
