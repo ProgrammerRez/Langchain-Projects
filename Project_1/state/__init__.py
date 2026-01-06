@@ -39,6 +39,7 @@ class DocumentClassification(BaseModel):
 # Defining the State for the Classification Workflow
 class TriageState(TypedDict):
     document_id: str
+    file_path: str
     document_content: List[str] | List[Document] | None# Raw Text or OCR Output
     document_type: str | None  # Optional
     confidence_score: float
@@ -195,3 +196,13 @@ DOCUMENT_RULES = {
     - No auto-routing allowed.
     """
 }
+
+
+RouteDecision = Literal[
+    "ACCEPT",
+    "RETRY_CLASSIFICATION",
+    "RETRY_EXTRACTION",
+    "HUMAN_REVIEW",
+    "REJECT",
+    "FAIL_PIPELINE",
+]

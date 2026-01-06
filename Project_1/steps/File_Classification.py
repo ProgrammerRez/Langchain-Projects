@@ -17,7 +17,7 @@ from langgraph.graph import StateGraph, START, END, state
 from langchain_groq import ChatGroq
 from unstructured.partition.pdf import partition_pdf
 from langchain_classic.schema import Document
-from logger import logging
+from logger import logger
 from prompts import CLASSIFICAION_PROMPT
 from state import DocumentClassification, TriageState
 from exceptions import (
@@ -35,18 +35,18 @@ def run_ocr(path: str) -> str:
     """
     OCR Fallback: extracts text from PDF using unstructured.partition.pdf.
     """
-    logging.info("🔄 Running OCR fallback")
+    logger.info("🔄 Running OCR fallback")
     try:
         elements = partition_pdf(filename=path)
         text = "\n".join(el.text for el in elements if hasattr(el, "text"))
         if not text.strip():
             raise OCRFailureError("OCR returned no readable text")
-        logging.info("✅ OCR successful")
+        logger.info("✅ OCR successful")
         return text
     except OCRFailureError:
         raise
     except Exception as e:
-        logging.exception("❌ OCR execution failed")
+        logger.exception("❌ OCR execution failed")
         raise OCRFailureError(str(e))
 
 
@@ -58,12 +58,12 @@ def file_extraction_workflow(path: str) -> List[Document]:
     Extract text from PDF using PyPDFLoader, falls back to OCR if necessary.
     Splits text into chunks for classification.
     """
-    logging.info(f"📄 Extracting file: {path}")
+    logger.info(f"📄 Extracting file: {path}")
     try:
         with open(path, "rb") as f:
             data = f.read()
     except Exception as e:
-        logging.exception("❌ Failed to read input file")
+        logger.exception("❌ Failed to read input file")
         raise FileIngestionError(str(e))
 
     tmp_path = None
@@ -77,19 +77,19 @@ def file_extraction_workflow(path: str) -> List[Document]:
         full_text = "\n".join(doc.page_content for doc in documents)
 
         if len(full_text.strip()) < 20:
-            logging.warning("⚠️ Low text detected — running OCR fallback")
+            logger.warning("⚠️ Low text detected — running OCR fallback")
             ocr_text = run_ocr(tmp_path)
             documents = [Document(page_content=ocr_text)]
 
     except OCRFailureError:
         raise
     except Exception as e:
-        logging.exception("❌ Text extraction failed")
+        logger.exception("❌ Text extraction failed")
         raise TextExtractionError(str(e))
 
     splitter = RecursiveCharacterTextSplitter(chunk_size=2000, chunk_overlap=200)
     chunks = splitter.split_documents(documents)
-    logging.info(f"✅ Extraction complete | chunks={len(chunks)}")
+    logger.info(f"✅ Extraction complete | chunks={len(chunks)}")
     return chunks
 
 
@@ -102,10 +102,10 @@ def create_classification_workflow(llm, system_prompt) -> state.CompiledStateGra
     """
 
     classifier = llm.with_structured_output(DocumentClassification)
-    logging.info("🧠 Classification workflow initialized")
+    logger.info("🧠 Classification workflow initialized")
 
     def classify_with_fallback(state: TriageState) -> dict:
-        logging.info("🧠 Starting document classification")
+        logger.info("🧠 Starting document classification")
 
         # Serialize content to string for Groq
         if state["document_content"] and isinstance(state["document_content"], list):
@@ -124,9 +124,9 @@ def create_classification_workflow(llm, system_prompt) -> state.CompiledStateGra
                 SystemMessage(content="Classify this document type quickly."),
                 HumanMessage(content=content_str[:2000])  # slice string safely
             ])
-            logging.info(f"✅ Pass 1 completed | confidence={quick.confidence:.3f}")
+            logger.info(f"✅ Pass 1 completed | confidence={quick.confidence:.3f}")
         except Exception as e:
-            logging.exception("❌ Model invocation failed (pass 1)")
+            logger.exception("❌ Model invocation failed (pass 1)")
             raise ModelInvocationError(str(e))
 
         if quick.confidence >= 0.8:
@@ -148,9 +148,9 @@ def create_classification_workflow(llm, system_prompt) -> state.CompiledStateGra
                 SystemMessage(content=system_prompt),
                 HumanMessage(content=content_str)  # full string
             ])
-            logging.info(f"🔍 Pass 2 completed | confidence={detailed.confidence:.3f}")
+            logger.info(f"🔍 Pass 2 completed | confidence={detailed.confidence:.3f}")
         except Exception as e:
-            logging.exception("❌ Model invocation failed (pass 2)")
+            logger.exception("❌ Model invocation failed (pass 2)")
             raise ModelInvocationError(str(e))
 
         ambiguous = (
@@ -188,7 +188,7 @@ def classify_docs(file_path: str, state: TriageState) -> dict:
     3. Run two-pass classification
     4. Returns updated TriageState dict
     """
-    logging.info("🚀 Starting classification pipeline")
+    logger.info("🚀 Starting classification pipeline")
     try:
         doc_splits = file_extraction_workflow(file_path)
         state["document_content"] = doc_splits
@@ -200,5 +200,5 @@ def classify_docs(file_path: str, state: TriageState) -> dict:
         return agent.invoke(input=state)
 
     except Exception as e:
-        logging.exception("🔥 Classification pipeline failed")
+        logger.exception("🔥 Classification pipeline failed")
         raise ClassificationError(str(e))

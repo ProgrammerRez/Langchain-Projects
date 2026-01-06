@@ -17,6 +17,7 @@ Validation operates ONLY on:
 This guarantees token safety and deterministic behavior.
 """
 
+from logger import logger
 from typing import Dict, Any
 
 from langchain_core.prompts import ChatPromptTemplate
@@ -26,10 +27,11 @@ from state import DocumentValidation, DOCUMENT_RULES
 from prompts import VALIDATION_PROMPT
 
 
+
+
 # =========================
 # CHAIN CREATION
 # =========================
-
 def create_validation_chain():
     """
     Create a validation chain that evaluates classifier output
@@ -38,6 +40,7 @@ def create_validation_chain():
     Returns:
         Runnable chain producing DocumentValidation.
     """
+    logger.info("Creating validation chain...")
 
     prompt = ChatPromptTemplate.from_messages([
         VALIDATION_PROMPT,
@@ -74,19 +77,17 @@ Return:
 - justification (concise, factual)
 """
     ])
-
     llm = ChatGroq(
         model="llama-3.3-70b-versatile",
         temperature=0.0
     )
-
+    logger.info("Validation chain created successfully.")
     return prompt | llm.with_structured_output(DocumentValidation)
 
 
 # =========================
 # VALIDATION EXECUTION
 # =========================
-
 def validate_document(
     *,
     validated_label: str,
@@ -108,13 +109,26 @@ def validate_document(
     Returns:
         DocumentValidation: Structured validation result.
     """
+    logger.info(
+        "Starting document validation | label=%s confidence=%.2f ambiguous=%s",
+        validated_label,
+        classifier_confidence,
+        ambiguous
+    )
 
     rules = DOCUMENT_RULES.get(validated_label, [])
+    logger.debug("Loaded rules for label %s: %s", validated_label, rules)
 
-    return chain.invoke({
-        "validated_label": validated_label,
-        "classifier_confidence": classifier_confidence,
-        "ambiguous": ambiguous,
-        "rules": rules,
-        "extracted_signals": extracted_signals,
-    })
+    try:
+        result = chain.invoke({
+            "validated_label": validated_label,
+            "classifier_confidence": classifier_confidence,
+            "ambiguous": ambiguous,
+            "rules": rules,
+            "extracted_signals": extracted_signals,
+        })
+        logger.info("Validation completed | decision=%s", result.validation_decision)
+        return result
+    except Exception:
+        logger.exception("Validation chain invocation failed")
+        raise

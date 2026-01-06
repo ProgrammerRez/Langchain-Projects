@@ -73,7 +73,7 @@ async def classify_document(
         raw_result = await run_in_threadpool(
             classify_docs,
             file_path=Path(path),
-            input=initial_state,
+            input=initial_state, # type: ignore
         )
 
         result = normalize_result(raw_result)
@@ -86,7 +86,7 @@ async def classify_document(
         )
 
         validation = validate_document(
-            content=result["document_content"],
+            content=result["document_content"], # type: ignore
             label=result["document_type"],
             confidence=result["confidence_score"],
             ambiguous=result["ambiguous"],

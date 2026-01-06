@@ -1,10 +1,10 @@
 """
-Custom exceptions for the document classification pipeline.
+Custom exceptions for the document classification + validation pipeline.
 
-These exceptions are DOMAIN-LEVEL errors.
-They are meant to drive routing decisions, not just crash the system.
+These are DOMAIN-LEVEL errors.
+They are designed to drive routing, retries, fallbacks, and human review —
+not just crash the system.
 """
-
 
 # =========================
 # Base Exception
@@ -12,9 +12,10 @@ They are meant to drive routing decisions, not just crash the system.
 
 class ClassificationPipelineError(Exception):
     """
-    Base class for all classification pipeline exceptions.
-    Catch this at the orchestration / agent level.
+    Base class for all pipeline-level exceptions.
+    Catch ONLY this at the orchestration / agent boundary.
     """
+
     error_code = "PIPELINE_ERROR"
 
     def __init__(self, message: str):
@@ -32,7 +33,7 @@ class FileIngestionError(ClassificationPipelineError):
 
 
 class UnsupportedFileTypeError(ClassificationPipelineError):
-    """Raised when the file type is not supported."""
+    """Raised when the file type is not supported by the pipeline."""
     error_code = "UNSUPPORTED_FILE_TYPE"
 
 
@@ -55,8 +56,33 @@ class OCRFailureError(TextExtractionError):
 # =========================
 
 class ModelInvocationError(ClassificationPipelineError):
-    """Raised when a model or LLM call fails or times out."""
+    """Raised when an LLM or model invocation fails, times out, or returns invalid output."""
     error_code = "MODEL_INVOCATION_FAILED"
+
+
+class InvalidModelResponseError(ModelInvocationError):
+    """
+    Raised when the LLM responds but violates the expected schema.
+    """
+    error_code = "INVALID_MODEL_RESPONSE"
+
+
+# =========================
+# State Errors (CRITICAL)
+# =========================
+
+class InvalidPipelineStateError(ClassificationPipelineError):
+    """
+    Raised when the TriageState is missing required fields
+    or contains invalid values.
+    """
+
+    error_code = "INVALID_PIPELINE_STATE"
+
+
+class MissingStateFieldError(InvalidPipelineStateError):
+    """Raised when a required state key is missing."""
+    error_code = "MISSING_STATE_FIELD"
 
 
 # =========================
@@ -70,7 +96,7 @@ class ClassificationError(ClassificationPipelineError):
 
 class LowConfidenceClassificationError(ClassificationError):
     """
-    Raised when classification confidence is below an acceptable threshold.
+    Raised when classification confidence is below the acceptable threshold.
     """
 
     error_code = "LOW_CONFIDENCE"
@@ -86,9 +112,37 @@ class LowConfidenceClassificationError(ClassificationError):
 
 
 # =========================
+# Validation Errors
+# =========================
+
+class ValidationError(ClassificationPipelineError):
+    """
+    Raised when validation logic fails or produces an invalid result.
+    """
+    error_code = "VALIDATION_FAILED"
+
+
+class RuleEvaluationError(ValidationError):
+    """
+    Raised when validation rules cannot be evaluated
+    due to malformed inputs or missing signals.
+    """
+    error_code = "RULE_EVALUATION_FAILED"
+
+
+class AmbiguousValidationResultError(ValidationError):
+    """
+    Raised when validation cannot reach a decisive outcome.
+    """
+    error_code = "AMBIGUOUS_VALIDATION"
+
+
+# =========================
 # Routing / Decision Errors
 # =========================
 
 class RoutingDecisionError(ClassificationPipelineError):
-    """Raised when a routing decision cannot be determined."""
+    """
+    Raised when the system cannot determine the next routing step.
+    """
     error_code = "ROUTING_DECISION_FAILED"

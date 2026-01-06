@@ -1,5 +1,0 @@
-2026-01-02 21:35:25,641 - INFO - project_1 - ✅ Successfully Comepleted Request: Document_ID: doc_001
- Classification: invoice
-Confidence Score: 0.9
- Details: {'reasoning': "The presence of 'INVOICE #' and 'Total Amount' indicates that this is an invoice.", 'key_indicators': ['INVOICE #'], 'alternatives': ['contract', 'purchase_order'], 'pass': 1}
-2026-01-02 21:36:01,834 - INFO - project_1 - Done 
