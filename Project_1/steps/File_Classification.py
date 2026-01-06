@@ -1,10 +1,24 @@
+"""
+File_Classification.py
+
+Purpose:
+--------
+Handles extraction, chunking, classification (two-pass), and OCR fallback
+for PDF documents using your TriageState and DocumentClassification.
+"""
+
+from typing import List
+import tempfile as tf
+import os
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain.messages import SystemMessage, HumanMessage
-from langgraph.graph import StateGraph, START, END
+from langgraph.graph import StateGraph, START, END, state
+from langchain_groq import ChatGroq
 from unstructured.partition.pdf import partition_pdf
 from langchain_classic.schema import Document
 from logger import logging
+from prompts import CLASSIFICAION_PROMPT
 from state import DocumentClassification, TriageState
 from exceptions import (
     FileIngestionError,
@@ -13,34 +27,38 @@ from exceptions import (
     ModelInvocationError,
     ClassificationError,
 )
-import tempfile as tf
-import os
 
+# -------------------------
+# OCR fallback
+# -------------------------
 def run_ocr(path: str) -> str:
+    """
+    OCR Fallback: extracts text from PDF using unstructured.partition.pdf.
+    """
     logging.info("🔄 Running OCR fallback")
-
     try:
         elements = partition_pdf(filename=path)
         text = "\n".join(el.text for el in elements if hasattr(el, "text"))
-
         if not text.strip():
-            logging.error("❌ OCR produced empty output")
             raise OCRFailureError("OCR returned no readable text")
-
         logging.info("✅ OCR successful")
         return text
-
     except OCRFailureError:
         raise
-
     except Exception as e:
         logging.exception("❌ OCR execution failed")
         raise OCRFailureError(str(e))
 
 
-def file_extraction_workflow(path: str) -> list[Document]:
-    logging.info(f"📄 Starting file extraction: {path}")
-
+# -------------------------
+# File extraction
+# -------------------------
+def file_extraction_workflow(path: str) -> List[Document]:
+    """
+    Extract text from PDF using PyPDFLoader, falls back to OCR if necessary.
+    Splits text into chunks for classification.
+    """
+    logging.info(f"📄 Extracting file: {path}")
     try:
         with open(path, "rb") as f:
             data = f.read()
@@ -49,7 +67,6 @@ def file_extraction_workflow(path: str) -> list[Document]:
         raise FileIngestionError(str(e))
 
     tmp_path = None
-
     try:
         fd, tmp_path = tf.mkstemp(suffix=".pdf")
         with os.fdopen(fd, "wb") as tmp_file:
@@ -57,7 +74,6 @@ def file_extraction_workflow(path: str) -> list[Document]:
 
         loader = PyPDFLoader(tmp_path)
         documents = loader.load()
-
         full_text = "\n".join(doc.page_content for doc in documents)
 
         if len(full_text.strip()) < 20:
@@ -67,46 +83,48 @@ def file_extraction_workflow(path: str) -> list[Document]:
 
     except OCRFailureError:
         raise
-
-
-
     except Exception as e:
         logging.exception("❌ Text extraction failed")
         raise TextExtractionError(str(e))
 
-    splitter = RecursiveCharacterTextSplitter(
-        chunk_size=2000, chunk_overlap=200
-    )
+    splitter = RecursiveCharacterTextSplitter(chunk_size=2000, chunk_overlap=200)
     chunks = splitter.split_documents(documents)
-
     logging.info(f"✅ Extraction complete | chunks={len(chunks)}")
     return chunks
 
 
+# -------------------------
+# Classification workflow
+# -------------------------
+def create_classification_workflow(llm, system_prompt) -> state.CompiledStateGraph:
+    """
+    Creates the classification workflow graph using your DocumentClassification schema.
+    """
 
-def create_classificatioN_workflow(llm, system_prompt):
     classifier = llm.with_structured_output(DocumentClassification)
-
     logging.info("🧠 Classification workflow initialized")
 
     def classify_with_fallback(state: TriageState) -> dict:
         logging.info("🧠 Starting document classification")
 
-        try:
-            quick = classifier.invoke(
-                [
-                    SystemMessage(
-                        content="Classify this document type quickly."
-                    ),
-                    HumanMessage(
-                        content=state["document_content"][:2000]
-                    ),
-                ]
-            )
-            logging.info(
-                f"✅ Pass 1 completed | confidence={quick.confidence:.3f}"
-            )
+        # Serialize content to string for Groq
+        if state["document_content"] and isinstance(state["document_content"], list):
+            content_str = ""
+            for doc in state["document_content"]:
+                if hasattr(doc, "page_content"):
+                    content_str += doc.page_content + "\n"
+                else:
+                    content_str += str(doc) + "\n"
+        else:
+            content_str = str(state["document_content"] or "")
 
+        # Pass 1: quick classification
+        try:
+            quick = classifier.invoke([
+                SystemMessage(content="Classify this document type quickly."),
+                HumanMessage(content=content_str[:2000])  # slice string safely
+            ])
+            logging.info(f"✅ Pass 1 completed | confidence={quick.confidence:.3f}")
         except Exception as e:
             logging.exception("❌ Model invocation failed (pass 1)")
             raise ModelInvocationError(str(e))
@@ -124,17 +142,13 @@ def create_classificatioN_workflow(llm, system_prompt):
                 },
             }
 
+        # Pass 2: detailed classification
         try:
-            detailed = classifier.invoke(
-                [
-                    SystemMessage(content=system_prompt),
-                    HumanMessage(content=state["document_content"]),
-                ]
-            )
-            logging.info(
-                f"🔍 Pass 2 completed | confidence={detailed.confidence:.3f}"
-            )
-
+            detailed = classifier.invoke([
+                SystemMessage(content=system_prompt),
+                HumanMessage(content=content_str)  # full string
+            ])
+            logging.info(f"🔍 Pass 2 completed | confidence={detailed.confidence:.3f}")
         except Exception as e:
             logging.exception("❌ Model invocation failed (pass 2)")
             raise ModelInvocationError(str(e))
@@ -160,45 +174,31 @@ def create_classificatioN_workflow(llm, system_prompt):
     builder.add_node("classify", classify_with_fallback)
     builder.add_edge(START, "classify")
     builder.add_edge("classify", END)
-
     return builder.compile()
 
 
-def classify_docs(file_path, llm, system_prompt, input: TriageState):
+# -------------------------
+# Main classification function
+# -------------------------
+def classify_docs(file_path: str, state: TriageState) -> dict:
+    """
+    Full classification pipeline:
+    1. Extract text from file (OCR fallback)
+    2. Chunk text
+    3. Run two-pass classification
+    4. Returns updated TriageState dict
+    """
     logging.info("🚀 Starting classification pipeline")
-
     try:
         doc_splits = file_extraction_workflow(file_path)
+        state["document_content"] = doc_splits
 
-        agent = create_classificatioN_workflow(llm, system_prompt)
+        # Create agent once
+        llm = ChatGroq(model='llama-3.3-70b-versatile')
+        agent = create_classification_workflow(llm=llm, system_prompt=CLASSIFICAION_PROMPT)
 
-        input["document_content"] = "\n".join(
-            doc.page_content for doc in doc_splits
-        )
-
-        return agent.invoke(input=input)
+        return agent.invoke(input=state)
 
     except Exception as e:
         logging.exception("🔥 Classification pipeline failed")
         raise ClassificationError(str(e))
-
-
-
-# if __name__=='__main__':
-    
-    
-#     llm = ChatGroq(model='llama-3.3-70b-versatile')
-    
-#     agent = create_classificatioN_workflow(llm, CLASSIFICAION_PROMPT)
-    
-#     initial_state: TriageState = {
-#         "document_id": "doc_001",
-#         "document_content": "Invoice #1234\nTotal Amount: $450\nDue Date: 10 Jan 2026",
-#         "document_type": None,
-#         "confidence_score": 0.0,
-#         "classification_details": {}
-#     }
-
-#     result = agent.invoke(initial_state)
-
-#     print(result)

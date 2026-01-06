@@ -1,0 +1,76 @@
+2026-01-03 11:26:00,970 - INFO - project_1 - 🚀 Starting streaming server at 127.0.0.1:5000
+2026-01-03 11:26:08,274 - INFO - project_1 - 📥 Incoming streaming request | document_id=doc_1
+2026-01-03 11:26:08,512 - INFO - project_1 - 📄 Document split into 3 chunks
+2026-01-03 11:26:10,342 - INFO - project_1 - 📥 Incoming streaming request | document_id=doc_2
+2026-01-03 11:26:10,342 - INFO - project_1 - 📥 Incoming streaming request | document_id=doc_3
+2026-01-03 11:26:10,901 - INFO - project_1 - 📄 Document split into 12 chunks
+2026-01-03 11:26:13,468 - INFO - project_1 - ✅ Completed streaming for doc_1
+2026-01-03 11:26:32,793 - INFO - project_1 - ✅ Completed streaming for doc_3
+2026-01-03 11:28:13,310 - INFO - project_1 - 📄 Document split into 47 chunks
+2026-01-03 11:30:56,847 - INFO - project_1 - 🚀 Starting streaming server at 127.0.0.1:5000
+2026-01-03 11:33:39,837 - INFO - project_1 - 📥 Incoming streaming request | document_id=doc_2
+2026-01-03 11:33:39,840 - INFO - project_1 - 📥 Incoming streaming request | document_id=doc_1
+2026-01-03 11:33:39,840 - INFO - project_1 - 📥 Incoming streaming request | document_id=doc_3
+2026-01-03 11:33:40,196 - INFO - project_1 - 📄 Document split into 3 chunks
+2026-01-03 11:33:40,614 - INFO - project_1 - 📄 Document split into 12 chunks
+2026-01-03 11:33:43,890 - INFO - project_1 - ✅ Completed streaming for doc_1
+2026-01-03 11:34:03,912 - INFO - project_1 - ✅ Completed streaming for doc_3
+2026-01-03 11:35:46,722 - INFO - project_1 - 📄 Document split into 47 chunks
+2026-01-03 11:36:34,034 - ERROR - project_1 - ❌ Classification failed | (3221225786, 'Estimating resolution as 165 ObjectCache(00007ffbf3c26600)::~ObjectCache(): WARNING! LEAK! object 00000254b574e7e0 still has count 1 (id C:\\Program Files\\Tesseract-OCR/tessdata/eng.traineddatalstm-punc-dawg) ObjectCache(00007ffbf3c26600)::~ObjectCache(): WARNING! LEAK! object 00000254b6f93a50 still has count 1 (id C:\\Program Files\\Tesseract-OCR/tessdata/eng.traineddatalstm-word-dawg) ObjectCache(00007ffbf3c26600)::~ObjectCache(): WARNING! LEAK! object 00000254b6f939e0 still has count 1 (id C:\\Program Files\\Tesseract-OCR/tessdata/eng.traineddatalstm-number-dawg)')
+2026-01-03 11:36:57,760 - INFO - project_1 - 🚀 Starting server at 127.0.0.1:5000
+2026-01-03 11:37:05,448 - INFO - project_1 - 📄 Document classified | id=doc_1 | type=invoice | confidence=0.900 | ambiguous=False
+2026-01-03 11:38:57,712 - INFO - project_1 - 📄 Document classified | id=doc_2 | type=purchase_order | confidence=0.900 | ambiguous=False
+2026-01-03 11:39:00,099 - INFO - project_1 - 📄 Document classified | id=doc_3 | type=medical_record | confidence=0.900 | ambiguous=False
+2026-01-03 23:12:28,215 - INFO - project_1 - 🚀 Starting server at 127.0.0.1:5000
+2026-01-03 23:13:29,282 - INFO - project_1 - 📄 Document classified | id=doc_001 | type=invoice | confidence=0.900 | ambiguous=False
+2026-01-03 23:13:29,282 - ERROR - project_1 - 🔥 Unexpected error
+Traceback (most recent call last):
+  File "D:\Side-Projects\Langchain Projects\Project_1\demo.py", line 57, in classify_document
+    validation = validate_document(content=result['document_content'],
+                                           ~~~~~~^^^^^^^^^^^^^^^^^^^^
+KeyError: 'document_content'
+2026-01-03 23:24:27,262 - INFO - project_1 - 🚀 Starting server at http://127.0.0.1:5000
+2026-01-03 23:24:33,584 - INFO - project_1 - 📄 Document classified | id=doc_001 | type=invoice | confidence=0.900 | ambiguous=False
+2026-01-03 23:26:11,974 - INFO - project_1 - 📄 Document classified | id=doc_001 | type=invoice | confidence=0.950 | ambiguous=False
+2026-01-03 23:26:13,607 - INFO - project_1 - 📄 Document classified | id=doc_001 | type=invoice | confidence=0.950 | ambiguous=False
+2026-01-03 23:26:15,657 - INFO - project_1 - 📄 Document classified | id=doc_001 | type=invoice | confidence=0.900 | ambiguous=False
+2026-01-03 23:26:17,364 - INFO - project_1 - 📄 Document classified | id=doc_001 | type=invoice | confidence=0.900 | ambiguous=False
+2026-01-03 23:26:42,297 - INFO - project_1 - 📄 Document classified | id=doc_1 | type=invoice | confidence=0.950 | ambiguous=False
+2026-01-03 23:26:45,266 - INFO - project_1 - 📄 Document classified | id=doc_3 | type=medical_record | confidence=0.900 | ambiguous=False
+2026-01-03 23:29:07,708 - INFO - project_1 - 📄 Document classified | id=doc_2 | type=purchase_order | confidence=0.900 | ambiguous=False
+2026-01-03 23:29:08,318 - ERROR - project_1 - 🔥 Unexpected server error
+Traceback (most recent call last):
+  File "D:\Side-Projects\Langchain Projects\Project_1\demo.py", line 88, in classify_document
+    validation = validate_document(
+                 ^^^^^^^^^^^^^^^^^^
+  File "D:\Side-Projects\Langchain Projects\Project_1\steps\Validation.py", line 93, in validate_document
+    result: DocumentValidation = chain.invoke({
+                                 ^^^^^^^^^^^^^^
+  File "C:\Users\DELL\.conda\envs\langchain-portfolio\Lib\site-packages\langchain_core\runnables\base.py", line 3151, in invoke
+    input_ = context.run(step.invoke, input_, config)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\DELL\.conda\envs\langchain-portfolio\Lib\site-packages\langchain_core\runnables\base.py", line 5557, in invoke
+    return self.bound.invoke(
+           ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\DELL\.conda\envs\langchain-portfolio\Lib\site-packages\langchain_core\language_models\chat_models.py", line 398, in invoke
+    self.generate_prompt(
+  File "C:\Users\DELL\.conda\envs\langchain-portfolio\Lib\site-packages\langchain_core\language_models\chat_models.py", line 1117, in generate_prompt
+    return self.generate(prompt_messages, stop=stop, callbacks=callbacks, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\DELL\.conda\envs\langchain-portfolio\Lib\site-packages\langchain_core\language_models\chat_models.py", line 927, in generate
+    self._generate_with_cache(
+  File "C:\Users\DELL\.conda\envs\langchain-portfolio\Lib\site-packages\langchain_core\language_models\chat_models.py", line 1221, in _generate_with_cache
+    result = self._generate(
+             ^^^^^^^^^^^^^^^
+  File "C:\Users\DELL\.conda\envs\langchain-portfolio\Lib\site-packages\langchain_groq\chat_models.py", line 593, in _generate
+    response = self.client.create(messages=message_dicts, **params)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\DELL\.conda\envs\langchain-portfolio\Lib\site-packages\groq\resources\chat\completions.py", line 461, in create
+    return self._post(
+           ^^^^^^^^^^^
+  File "C:\Users\DELL\.conda\envs\langchain-portfolio\Lib\site-packages\groq\_base_client.py", line 1242, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\DELL\.conda\envs\langchain-portfolio\Lib\site-packages\groq\_base_client.py", line 1044, in request
+    raise self._make_status_error_from_response(err.response) from None
+groq.APIStatusError: Error code: 413 - {'error': {'message': 'Request too large for model `llama-3.3-70b-versatile` in organization `org_01jzf6z41ke59rggmn4z3nfgb6` service tier `on_demand` on tokens per minute (TPM): Limit 12000, Requested 20932, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}

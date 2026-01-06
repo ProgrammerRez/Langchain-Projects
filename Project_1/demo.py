@@ -1,9 +1,10 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Query
+from fastapi.concurrency import run_in_threadpool
 from pydantic import BaseModel
 from pathlib import Path
-from langchain_groq import ChatGroq
+
 from steps.File_Classification import classify_docs
-from prompts import CLASSIFICAION_PROMPT
+from steps.Validation import create_validation_chain, validate_document
 from logger import logger
 from exceptions import (
     ClassificationError,
@@ -13,25 +14,50 @@ from exceptions import (
     ModelInvocationError,
 )
 
+# ------------------------
+# Request Model
+# ------------------------
+
 class ClassificationRequest(BaseModel):
     document_id: str
 
+
+# ------------------------
+# App
+# ------------------------
+
 app = FastAPI(title="Document Classification API")
 
-def normalize_result(result):
+# Validation chain (must be stateless)
+val_llm = create_validation_chain()
+
+
+# ------------------------
+# Helpers
+# ------------------------
+
+def normalize_result(result: dict) -> dict:
     return {
         "document_type": result.get("document_type"),
-        "confidence_score": result.get("confidence_score", 0),
+        "confidence_score": result.get("confidence_score", 0.0),
         "ambiguous": result.get("ambiguous", False),
         "classification_details": result.get("classification_details", {}),
+        "document_content": result.get("document_content", ""),
     }
 
+
+# ------------------------
+# Endpoint
+# ------------------------
+
 @app.post("/classify")
-async def classify_document(request: ClassificationRequest, path: str):
+async def classify_document(
+    request: ClassificationRequest,
+    path: str = Query(..., description="Path to the document file"),
+):
     """
     Classifies the whole document and returns the result.
     """
-    llm = ChatGroq(model="llama-3.3-70b-versatile")
 
     initial_state = {
         "document_id": request.document_id,
@@ -43,51 +69,72 @@ async def classify_document(request: ClassificationRequest, path: str):
     }
 
     try:
-        # Call your classification pipeline
-        result = normalize_result(classify_docs(
+        # ---- Run heavy work off the event loop ----
+        raw_result = await run_in_threadpool(
+            classify_docs,
             file_path=Path(path),
-            llm=llm,
-            system_prompt=CLASSIFICAION_PROMPT,
-            input=initial_state
-        ))
+            input=initial_state,
+        )
+
+        result = normalize_result(raw_result)
 
         logger.info(
             f"📄 Document classified | id={request.document_id} | "
-            f"type={result['document_type']} | confidence={result['confidence_score']:.3f} | "
+            f"type={result['document_type']} | "
+            f"confidence={result['confidence_score']:.3f} | "
             f"ambiguous={result['ambiguous']}"
         )
 
-        return result
+        validation = validate_document(
+            content=result["document_content"],
+            label=result["document_type"],
+            confidence=result["confidence_score"],
+            ambiguous=result["ambiguous"],
+            chain=val_llm,
+        )
+
+        return {
+            "document_id": request.document_id,
+            "document_type": result["document_type"],
+            "confidence_score": result["confidence_score"],
+            "ambiguous": result["ambiguous"],
+            "classification_details": result["classification_details"],
+            "validation": validation,
+        }
 
     except FileIngestionError as e:
         logger.error(f"📄 File ingestion failed | {e}")
         raise HTTPException(status_code=400, detail=str(e))
 
-    except OCRFailureError as e:
-        logger.error(f"🔍 OCR failed | {e}")
-        raise HTTPException(status_code=422, detail=str(e))
-
-    except TextExtractionError as e:
+    except (OCRFailureError, TextExtractionError) as e:
         logger.error(f"📑 Text extraction failed | {e}")
         raise HTTPException(status_code=422, detail=str(e))
 
-    except ModelInvocationError as e:
-        logger.error(f"🧠 Model failure | {e}")
-        raise HTTPException(status_code=503, detail=str(e))
+    except ModelInvocationError:
+        logger.error("🧠 Model invocation failed")
+        raise HTTPException(status_code=503, detail="Model unavailable")
 
     except ClassificationError as e:
         logger.error(f"❌ Classification failed | {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail="Classification failed")
 
-    except Exception as e:
-        logger.exception("🔥 Unexpected error")
-        raise HTTPException(status_code=500, detail=str(e))
+    except Exception:
+        logger.exception("🔥 Unexpected server error")
+        raise HTTPException(
+            status_code=500,
+            detail="Internal server error",
+        )
 
+
+# ------------------------
+# Entrypoint
+# ------------------------
 
 if __name__ == "__main__":
     import uvicorn
 
     host = "127.0.0.1"
     port = 5000
-    logger.info(f"🚀 Starting server at {host}:{port}")
-    uvicorn.run(app=app, host=host, port=port)
+
+    logger.info(f"🚀 Starting server at http://{host}:{port}")
+    uvicorn.run(app, host=host, port=port)
