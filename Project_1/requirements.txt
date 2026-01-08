@@ -8,3 +8,4 @@ pydantic
 unstructured[pdf]
 langchain-classic
 python-multipart
+opencv-python-headless
