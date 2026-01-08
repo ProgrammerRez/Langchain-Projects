@@ -3,7 +3,6 @@ from logger import logger
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from pathlib import Path
-from steps.File_Classification import file_extraction_workflow
 import uuid
 import uvicorn
 from steps.Pipeline import build_document_pipeline
