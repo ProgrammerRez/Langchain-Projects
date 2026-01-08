@@ -1,13 +1,13 @@
-import streamlit as st
 import uuid
 from pathlib import Path
+import streamlit as st
 
 from logger import logger
 from steps.Pipeline import build_document_pipeline
 from state import TriageState
 
 # -------------------------
-# PAGE CONFIG
+# CONFIG
 # -------------------------
 st.set_page_config(
     page_title="Document Classification Pipeline",
@@ -26,19 +26,18 @@ def load_pipeline():
 pipeline = load_pipeline()
 
 # -------------------------
-# TEMP DIR (OPTIONAL)
+# UPLOAD DIR
 # -------------------------
 UPLOAD_DIR = Path("uploads")
 UPLOAD_DIR.mkdir(exist_ok=True)
 
 # -------------------------
-# INPUT
+# FILE UPLOAD
 # -------------------------
-st.subheader("Input Document")
-
-file_path = st.text_input(
-    "Enter absolute path to PDF/document",
-    placeholder="D:/docs/sample.pdf",
+uploaded_file = st.file_uploader(
+    "Upload a PDF document",
+    type=["pdf"],
+    accept_multiple_files=False,
 )
 
 run_btn = st.button("Run Classification")
@@ -47,26 +46,31 @@ run_btn = st.button("Run Classification")
 # PROCESS
 # -------------------------
 if run_btn:
-    if not file_path:
-        st.error("Provide a valid file path.")
+    if uploaded_file is None:
+        st.error("Upload a PDF file first.")
         st.stop()
 
-    if not Path(file_path).exists():
-        st.error("File does not exist.")
-        st.stop()
+    # Save uploaded file
+    file_id = str(uuid.uuid4())
+    file_path = UPLOAD_DIR / f"{file_id}_{uploaded_file.name}"
 
+    with open(file_path, "wb") as f:
+        f.write(uploaded_file.getbuffer())
+
+    st.info(f"File saved: {file_path.name}")
+
+    # Initialize state
+    state: TriageState = {
+        "document_id": file_id,
+        "file_path": str(file_path),
+        "document_content": None,
+        "document_type": None,
+        "confidence_score": 0.0,
+        "classification_details": {},
+    }
+
+    # Run pipeline
     with st.spinner("Running classification pipeline..."):
-        file_id = str(uuid.uuid4())
-
-        state: TriageState = {
-            "document_id": file_id,
-            "file_path": file_path,
-            "document_content": None,
-            "document_type": None,
-            "confidence_score": 0.0,
-            "classification_details": {},
-        }
-
         try:
             result = pipeline(state)
 
@@ -85,7 +89,7 @@ if run_btn:
             })
 
             # -------------------------
-            # VALIDATION (IF EXISTS)
+            # VALIDATION (OPTIONAL)
             # -------------------------
             if "validation" in result:
                 v = result["validation"]
@@ -100,7 +104,7 @@ if run_btn:
                 })
 
             # -------------------------
-            # ERROR (PIPELINE-LEVEL)
+            # PIPELINE ERROR (LOGIC LEVEL)
             # -------------------------
             if "error" in result:
                 st.error(str(result["error"]))
