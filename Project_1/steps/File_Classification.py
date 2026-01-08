@@ -37,7 +37,11 @@ def run_ocr(path: str) -> str:
     """
     logger.info("🔄 Running OCR fallback")
     try:
-        elements = partition_pdf(filename=path)
+        elements = partition_pdf(
+            filename=path,
+            infer_table_structure=False,
+            strategy="fast",  # CRITICAL
+        )
         text = "\n".join(el.text for el in elements if hasattr(el, "text"))
         if not text.strip():
             raise OCRFailureError("OCR returned no readable text")
