@@ -37,7 +37,7 @@ async def health_check():
 # ROUTE: Process PDF
 # -------------------------
 @app.post("/classify")
-async def classify_pdf(path:str):
+def classify_pdf(path:str):
     # Generate unique filename
     file_id = str(uuid.uuid4())
 

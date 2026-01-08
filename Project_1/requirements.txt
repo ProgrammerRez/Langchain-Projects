@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+langchain
+langchain-community
+langchain-groq
+langgraph
+pydantic
+unstructured[pdf]
+langchain-classic
+python-multipart

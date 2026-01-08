@@ -1,15 +1,19 @@
 import os
 from pathlib import Path
 
-list_of_directories = ['demo.py',
-                       'notebook/Prototyping.ipynb',
-                       'app.py',
-                       'main.py',
-                       'state/state.py',
+list_of_directories = ['logger/__init__.py',
+                       'exceptions/__init__.py',
+                       'prompts/__init__.py',
                        'state/__init__.py',
-                       'prompts/prompts.py',
-                       'exceptions/exceptions.py',
-                       'logging/logging.py'
+                       'steps/File_Classification.py',
+                       'steps/Validation.py',
+                       'steps/Pipeline.py',
+                       'steps/Routing.py',
+                       'steps/__init__.py',
+                       'app.py',
+                       'requirements.txt',
+                       'README.md',
+                       'notebook/Prototyping.ipynb'
                        ]
 
 if __name__=='__main__':
