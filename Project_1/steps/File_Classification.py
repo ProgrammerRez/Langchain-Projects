@@ -15,7 +15,6 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain.messages import SystemMessage, HumanMessage
 from langgraph.graph import StateGraph, START, END, state
 from langchain_groq import ChatGroq
-from unstructured.partition.pdf import partition_pdf
 from langchain_classic.schema import Document
 from logger import logger
 from prompts import CLASSIFICAION_PROMPT
@@ -32,12 +31,17 @@ from exceptions import (
 # OCR fallback
 # -------------------------
 def run_ocr(path: str) -> str:
+    from unstructured.partition.pdf import partition_pdf
     """
     OCR Fallback: extracts text from PDF using unstructured.partition.pdf.
     """
     logger.info("🔄 Running OCR fallback")
     try:
-        elements = partition_pdf(filename=path)
+        elements = partition_pdf(
+            filename=path,
+            infer_table_structure=False,
+            strategy="fast",  # CRITICAL
+        )
         text = "\n".join(el.text for el in elements if hasattr(el, "text"))
         if not text.strip():
             raise OCRFailureError("OCR returned no readable text")
