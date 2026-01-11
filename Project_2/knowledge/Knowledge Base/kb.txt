@@ -1,0 +1,87 @@
+### FAQ Content for SaaS Technical Support
+
+**FAQ 001 — Account Management**
+**Title:** Managing Your Account and Profile Settings
+
+**Content:**
+Users can create, manage, and secure their accounts through the Account Settings portal. Key features include:
+
+* **Profile Updates:** Users can change their name, email, profile picture, and contact information. Changes take effect immediately but may require email verification for security.
+* **Password Management:** Passwords must be at least 12 characters, including uppercase, lowercase, numbers, and special characters. Users can reset passwords via “Forgot Password” or change them in Settings > Security. Multi-factor authentication (MFA) is highly recommended.
+* **Account Recovery:** If users lose access to their email, they can submit a recovery request. Recovery requests require verification of identity through linked phone numbers or previous transaction records.
+* **Subscription Management:** Users can upgrade, downgrade, or cancel their subscription. Billing changes take effect at the next billing cycle. Automatic renewals can be disabled in Settings > Billing.
+* **Account Deactivation:** Accounts can be deactivated temporarily or permanently. Permanent deletion removes all user data after 30 days.
+
+---
+
+**FAQ 002 — Application Performance**
+**Title:** Troubleshooting Common Application Crashes and Errors
+
+**Content:**
+Technical issues can arise due to OS compatibility, version mismatches, or third-party integrations. Common topics:
+
+* **Operating System Requirements:** Supported systems include Windows 10+, macOS 11+, and Linux Ubuntu 20.04+. Using older OS versions may cause crashes or slow performance.
+* **App Updates:** Always ensure the app is running the latest stable version. Outdated versions may conflict with server APIs, resulting in errors or crashes.
+* **Crash Reports:** If the app crashes, users can send automatic crash reports. These reports include logs, system info, and stack traces to help the support team identify root causes.
+* **Error Codes:** Common error codes include:
+
+  * `504` → Network timeout; check connectivity and retry.
+  * `401` → Unauthorized; verify login credentials or token expiry.
+  * `500` → Server error; typically temporary, may require retry.
+* **Third-party Conflicts:** Plugins, extensions, and antivirus software can interfere with app performance. Temporarily disabling them often resolves conflicts.
+* **Cache and Local Storage:** Corrupt cache can cause repeated crashes. Users should clear cache via Settings > Storage > Clear Cache.
+
+---
+
+**FAQ 003 — Features and Usage**
+**Title:** Using Core Features Effectively
+
+**Content:**
+
+* **Dashboard Overview:** Provides users with metrics, notifications, and task summaries. Widgets are customizable.
+* **Collaboration Tools:** Users can create shared workspaces, assign tasks, and set deadlines. Real-time notifications are sent via email and in-app alerts.
+* **Reporting and Analytics:** Users can generate reports, export CSV/PDF files, and schedule automated reporting. Filters and visualizations help identify trends and anomalies.
+* **Integrations:** Supports integrations with Slack, Jira, Google Workspace, and Zapier. Users must authenticate third-party apps before syncing.
+* **Mobile App:** Available for iOS and Android. Some features may be limited compared to desktop.
+
+---
+
+**FAQ 004 — Billing and Payments**
+**Title:** Understanding Subscription Plans, Billing, and Payments
+
+**Content:**
+
+* **Plan Types:** Free, Standard, and Enterprise plans. Enterprise includes advanced analytics and priority support.
+* **Payment Methods:** Credit/debit cards, PayPal, and ACH transfers. Enterprise customers may request invoices.
+* **Invoices and Receipts:** All billing activity is available under Settings > Billing > History. Users can download invoices in PDF format.
+* **Refunds and Credits:** Refund requests are evaluated on a case-by-case basis. Credits may be applied for partial billing periods or downtime.
+* **Late Payments:** Non-payment may result in account suspension. Enterprise contracts include grace periods.
+
+---
+
+**FAQ 005 — Security and Privacy**
+**Title:** Protecting User Data and Ensuring Compliance
+
+**Content:**
+
+* **Data Encryption:** All user data is encrypted at rest (AES-256) and in transit (TLS 1.2+).
+* **Access Control:** Role-based access controls ensure users only see data relevant to their role.
+* **GDPR and CCPA Compliance:** Personal data is handled according to GDPR and CCPA. Users can request data exports or deletions.
+* **Security Best Practices:** MFA, strong passwords, regular app updates, and avoiding public Wi-Fi are recommended.
+* **Incident Reporting:** Users must report suspicious activity immediately. The security team investigates and responds within 24 hours.
+
+---
+
+**FAQ 006 — Troubleshooting Connectivity Issues**
+**Title:** Fixing Network and Connectivity Problems
+
+**Content:**
+
+* **Network Requirements:** Stable internet with at least 5 Mbps for standard operations.
+* **Firewall & Proxy Issues:** Corporate firewalls may block API calls. Whitelist `*.saasapp.com` domains.
+* **VPN Conflicts:** Certain VPNs may interfere with real-time sync. Users should try disconnecting VPNs temporarily.
+* **Server Status:** Check system status dashboard for ongoing outages.
+* **Reconnection Tips:** Restart the app, clear cache, or reinstall if connection persists.
+
+---
+
