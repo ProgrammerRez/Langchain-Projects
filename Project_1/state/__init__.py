@@ -15,6 +15,7 @@ class DocumentClassification(BaseModel):
         "medical_record",
         "insurance_claim",
         "purchase_order",
+        "resume",
         "unknown"
     ] = Field(description="The primary document type")
     
