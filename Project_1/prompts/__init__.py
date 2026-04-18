@@ -14,6 +14,7 @@ Document Types You Can Classify:
 - medical_record: Patient info, diagnoses, procedures, prescriptions, provider letterhead
 - insurance_claim: Claim #, policy #, incident details, coverage info
 - purchase_order: PO number, vendor, line items, delivery date, approval
+- resume: Has LinkedIn, professional credentials, and experience
 """
 
 
@@ -29,7 +30,7 @@ You MUST:
 - Use only the provided validation rules
 - Identify evidence directly from the document text
 - Explicitly list rule matches and violations
-- Decide a final validation status
+- Decide on a final validation status
 
 You MUST NOT:
 - Reclassify the document
