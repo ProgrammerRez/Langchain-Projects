@@ -4,9 +4,7 @@ from pathlib import Path
 
 # List of PDFs to classify
 pdf_paths = [
-    "D:/Side-Projects/Langchain Projects/Project_1/Data/sample-invoice.pdf",
-    "D:/Side-Projects/Langchain Projects/Project_1/Data/Purchase-Order-Sample-.pdf",
-    "D:/Side-Projects/Langchain Projects/Project_1/Data/Sample-filled-in-MR.pdf",
+    "Data/Muhammad_Umar_Resume.pdf"
 ]
 
 # API endpoint (non-streaming version)

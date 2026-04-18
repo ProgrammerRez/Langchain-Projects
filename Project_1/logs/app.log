@@ -23,3 +23,171 @@ KeyError: 'file_path'
 2026-01-06 20:48:54,332 - INFO - project_1 - 🔄 Running OCR fallback
 2026-01-06 20:51:03,964 - INFO - project_1 - ✅ OCR successful
 2026-01-06 20:51:03,967 - INFO - project_1 - ✅ Extraction complete | chunks=47
+2026-04-18 19:12:13,963 - INFO - project_1 - 🧠 Initializing document pipeline (one-time setup)
+2026-04-18 19:12:14,353 - INFO - project_1 - Creating validation chain...
+2026-04-18 19:12:14,428 - INFO - project_1 - Validation chain created successfully.
+2026-04-18 19:12:39,769 - INFO - project_1 - 🧠 Initializing document pipeline (one-time setup)
+2026-04-18 19:12:40,109 - INFO - project_1 - Creating validation chain...
+2026-04-18 19:12:40,179 - INFO - project_1 - Validation chain created successfully.
+2026-04-18 19:12:50,024 - INFO - project_1 - 📄 Extracting file: uploads/f66bd42a-4cb0-4281-97d0-856e02ab8ef6_AI Automation Specialist Resume Review (1).pdf
+2026-04-18 19:12:50,246 - INFO - project_1 - ✅ Extraction complete | chunks=3
+2026-04-18 19:12:51,676 - INFO - project_1 - Starting document validation | label=resume confidence=0.90 ambiguous=False
+2026-04-18 19:12:53,875 - ERROR - project_1 - Validation chain invocation failed
+Traceback (most recent call last):
+  File "/home/programmerrez/Documents/Emergency/Langchain-Projects/Project_1/steps/Validation.py", line 123, in validate_document
+    result = chain.invoke({
+             ^^^^^^^^^^^^^^
+  File "/home/programmerrez/miniconda3/envs/ml_dl/lib/python3.12/site-packages/langchain_core/runnables/base.py", line 3157, in invoke
+    input_ = context.run(step.invoke, input_, config)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/programmerrez/miniconda3/envs/ml_dl/lib/python3.12/site-packages/langchain_core/runnables/base.py", line 5695, in invoke
+    return self.bound.invoke(
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/programmerrez/miniconda3/envs/ml_dl/lib/python3.12/site-packages/langchain_core/language_models/chat_models.py", line 402, in invoke
+    self.generate_prompt(
+  File "/home/programmerrez/miniconda3/envs/ml_dl/lib/python3.12/site-packages/langchain_core/language_models/chat_models.py", line 1149, in generate_prompt
+    return self.generate(prompt_messages, stop=stop, callbacks=callbacks, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/programmerrez/miniconda3/envs/ml_dl/lib/python3.12/site-packages/langchain_core/language_models/chat_models.py", line 958, in generate
+    self._generate_with_cache(
+  File "/home/programmerrez/miniconda3/envs/ml_dl/lib/python3.12/site-packages/langchain_core/language_models/chat_models.py", line 1261, in _generate_with_cache
+    result = self._generate(
+             ^^^^^^^^^^^^^^^
+  File "/home/programmerrez/miniconda3/envs/ml_dl/lib/python3.12/site-packages/langchain_groq/chat_models.py", line 621, in _generate
+    response = self.client.create(messages=message_dicts, **params)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/programmerrez/miniconda3/envs/ml_dl/lib/python3.12/site-packages/groq/resources/chat/completions.py", line 461, in create
+    return self._post(
+           ^^^^^^^^^^^
+  File "/home/programmerrez/miniconda3/envs/ml_dl/lib/python3.12/site-packages/groq/_base_client.py", line 1242, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/programmerrez/miniconda3/envs/ml_dl/lib/python3.12/site-packages/groq/_base_client.py", line 1044, in request
+    raise self._make_status_error_from_response(err.response) from None
+groq.BadRequestError: Error code: 400 - {'error': {'message': 'tool call validation failed: parameters for tool DocumentValidation did not match schema: errors: [`/validated_label`: value must be one of "invoice", "contract", "w2_form", "medical_record", "insurance_claim", "purchase_order", "unknown"]', 'type': 'invalid_request_error', 'code': 'tool_use_failed', 'failed_generation': '<function=DocumentValidation>{"validated_label": "resume", "classifier_confidence": 0.9, "validation_decision": "VALID", "matched_rules": [], "missing_required_rules": [], "forbidden_rule_hits": [], "justification": "No validation rules provided to evaluate the document against."}</function>'}}
+2026-04-18 19:12:53,888 - ERROR - project_1 - Pipeline execution failed
+Traceback (most recent call last):
+  File "/home/programmerrez/Documents/Emergency/Langchain-Projects/Project_1/streamlit_app.py", line 75, in <module>
+    result = pipeline(state)
+             ^^^^^^^^^^^^^^^
+  File "/home/programmerrez/Documents/Emergency/Langchain-Projects/Project_1/steps/Pipeline.py", line 124, in pipeline
+    validation = validate_document(
+                 ^^^^^^^^^^^^^^^^^^
+  File "/home/programmerrez/Documents/Emergency/Langchain-Projects/Project_1/steps/Validation.py", line 123, in validate_document
+    result = chain.invoke({
+             ^^^^^^^^^^^^^^
+  File "/home/programmerrez/miniconda3/envs/ml_dl/lib/python3.12/site-packages/langchain_core/runnables/base.py", line 3157, in invoke
+    input_ = context.run(step.invoke, input_, config)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/programmerrez/miniconda3/envs/ml_dl/lib/python3.12/site-packages/langchain_core/runnables/base.py", line 5695, in invoke
+    return self.bound.invoke(
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/programmerrez/miniconda3/envs/ml_dl/lib/python3.12/site-packages/langchain_core/language_models/chat_models.py", line 402, in invoke
+    self.generate_prompt(
+  File "/home/programmerrez/miniconda3/envs/ml_dl/lib/python3.12/site-packages/langchain_core/language_models/chat_models.py", line 1149, in generate_prompt
+    return self.generate(prompt_messages, stop=stop, callbacks=callbacks, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/programmerrez/miniconda3/envs/ml_dl/lib/python3.12/site-packages/langchain_core/language_models/chat_models.py", line 958, in generate
+    self._generate_with_cache(
+  File "/home/programmerrez/miniconda3/envs/ml_dl/lib/python3.12/site-packages/langchain_core/language_models/chat_models.py", line 1261, in _generate_with_cache
+    result = self._generate(
+             ^^^^^^^^^^^^^^^
+  File "/home/programmerrez/miniconda3/envs/ml_dl/lib/python3.12/site-packages/langchain_groq/chat_models.py", line 621, in _generate
+    response = self.client.create(messages=message_dicts, **params)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/programmerrez/miniconda3/envs/ml_dl/lib/python3.12/site-packages/groq/resources/chat/completions.py", line 461, in create
+    return self._post(
+           ^^^^^^^^^^^
+  File "/home/programmerrez/miniconda3/envs/ml_dl/lib/python3.12/site-packages/groq/_base_client.py", line 1242, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/programmerrez/miniconda3/envs/ml_dl/lib/python3.12/site-packages/groq/_base_client.py", line 1044, in request
+    raise self._make_status_error_from_response(err.response) from None
+groq.BadRequestError: Error code: 400 - {'error': {'message': 'tool call validation failed: parameters for tool DocumentValidation did not match schema: errors: [`/validated_label`: value must be one of "invoice", "contract", "w2_form", "medical_record", "insurance_claim", "purchase_order", "unknown"]', 'type': 'invalid_request_error', 'code': 'tool_use_failed', 'failed_generation': '<function=DocumentValidation>{"validated_label": "resume", "classifier_confidence": 0.9, "validation_decision": "VALID", "matched_rules": [], "missing_required_rules": [], "forbidden_rule_hits": [], "justification": "No validation rules provided to evaluate the document against."}</function>'}}
+2026-04-18 19:13:46,520 - INFO - project_1 - 🧠 Initializing document pipeline (one-time setup)
+2026-04-18 19:13:46,762 - INFO - project_1 - Creating validation chain...
+2026-04-18 19:13:46,847 - INFO - project_1 - Validation chain created successfully.
+2026-04-18 19:14:40,966 - INFO - project_1 - 📄 Extracting file: Data/Muhammad_Umar_Resume.pdf
+2026-04-18 19:14:41,044 - INFO - project_1 - ✅ Extraction complete | chunks=2
+2026-04-18 19:14:42,059 - INFO - project_1 - Starting document validation | label=resume confidence=0.90 ambiguous=False
+2026-04-18 19:14:42,872 - ERROR - project_1 - Validation chain invocation failed
+Traceback (most recent call last):
+  File "/home/programmerrez/Documents/Emergency/Langchain-Projects/Project_1/steps/Validation.py", line 123, in validate_document
+    result = chain.invoke({
+             ^^^^^^^^^^^^^^
+  File "/home/programmerrez/miniconda3/envs/ml_dl/lib/python3.12/site-packages/langchain_core/runnables/base.py", line 3157, in invoke
+    input_ = context.run(step.invoke, input_, config)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/programmerrez/miniconda3/envs/ml_dl/lib/python3.12/site-packages/langchain_core/runnables/base.py", line 5695, in invoke
+    return self.bound.invoke(
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/programmerrez/miniconda3/envs/ml_dl/lib/python3.12/site-packages/langchain_core/language_models/chat_models.py", line 402, in invoke
+    self.generate_prompt(
+  File "/home/programmerrez/miniconda3/envs/ml_dl/lib/python3.12/site-packages/langchain_core/language_models/chat_models.py", line 1149, in generate_prompt
+    return self.generate(prompt_messages, stop=stop, callbacks=callbacks, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/programmerrez/miniconda3/envs/ml_dl/lib/python3.12/site-packages/langchain_core/language_models/chat_models.py", line 958, in generate
+    self._generate_with_cache(
+  File "/home/programmerrez/miniconda3/envs/ml_dl/lib/python3.12/site-packages/langchain_core/language_models/chat_models.py", line 1261, in _generate_with_cache
+    result = self._generate(
+             ^^^^^^^^^^^^^^^
+  File "/home/programmerrez/miniconda3/envs/ml_dl/lib/python3.12/site-packages/langchain_groq/chat_models.py", line 621, in _generate
+    response = self.client.create(messages=message_dicts, **params)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/programmerrez/miniconda3/envs/ml_dl/lib/python3.12/site-packages/groq/resources/chat/completions.py", line 461, in create
+    return self._post(
+           ^^^^^^^^^^^
+  File "/home/programmerrez/miniconda3/envs/ml_dl/lib/python3.12/site-packages/groq/_base_client.py", line 1242, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/programmerrez/miniconda3/envs/ml_dl/lib/python3.12/site-packages/groq/_base_client.py", line 1044, in request
+    raise self._make_status_error_from_response(err.response) from None
+groq.BadRequestError: Error code: 400 - {'error': {'message': 'tool call validation failed: parameters for tool DocumentValidation did not match schema: errors: [`/validated_label`: value must be one of "invoice", "contract", "w2_form", "medical_record", "insurance_claim", "purchase_order", "unknown"]', 'type': 'invalid_request_error', 'code': 'tool_use_failed', 'failed_generation': '<function=DocumentValidation>{"validated_label": "resume", "classifier_confidence": 0.9, "validation_decision": "VALID", "matched_rules": [], "missing_required_rules": [], "forbidden_rule_hits": [], "justification": "No validation rules provided to evaluate the document against."} </function>'}}
+2026-04-18 19:14:42,875 - ERROR - project_1 - Pipeline execution failed
+Traceback (most recent call last):
+  File "/home/programmerrez/Documents/Emergency/Langchain-Projects/Project_1/app.py", line 55, in classify_pdf
+    result = pipeline(state)
+             ^^^^^^^^^^^^^^^
+  File "/home/programmerrez/Documents/Emergency/Langchain-Projects/Project_1/steps/Pipeline.py", line 124, in pipeline
+    validation = validate_document(
+                 ^^^^^^^^^^^^^^^^^^
+  File "/home/programmerrez/Documents/Emergency/Langchain-Projects/Project_1/steps/Validation.py", line 123, in validate_document
+    result = chain.invoke({
+             ^^^^^^^^^^^^^^
+  File "/home/programmerrez/miniconda3/envs/ml_dl/lib/python3.12/site-packages/langchain_core/runnables/base.py", line 3157, in invoke
+    input_ = context.run(step.invoke, input_, config)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/programmerrez/miniconda3/envs/ml_dl/lib/python3.12/site-packages/langchain_core/runnables/base.py", line 5695, in invoke
+    return self.bound.invoke(
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/programmerrez/miniconda3/envs/ml_dl/lib/python3.12/site-packages/langchain_core/language_models/chat_models.py", line 402, in invoke
+    self.generate_prompt(
+  File "/home/programmerrez/miniconda3/envs/ml_dl/lib/python3.12/site-packages/langchain_core/language_models/chat_models.py", line 1149, in generate_prompt
+    return self.generate(prompt_messages, stop=stop, callbacks=callbacks, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/programmerrez/miniconda3/envs/ml_dl/lib/python3.12/site-packages/langchain_core/language_models/chat_models.py", line 958, in generate
+    self._generate_with_cache(
+  File "/home/programmerrez/miniconda3/envs/ml_dl/lib/python3.12/site-packages/langchain_core/language_models/chat_models.py", line 1261, in _generate_with_cache
+    result = self._generate(
+             ^^^^^^^^^^^^^^^
+  File "/home/programmerrez/miniconda3/envs/ml_dl/lib/python3.12/site-packages/langchain_groq/chat_models.py", line 621, in _generate
+    response = self.client.create(messages=message_dicts, **params)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/programmerrez/miniconda3/envs/ml_dl/lib/python3.12/site-packages/groq/resources/chat/completions.py", line 461, in create
+    return self._post(
+           ^^^^^^^^^^^
+  File "/home/programmerrez/miniconda3/envs/ml_dl/lib/python3.12/site-packages/groq/_base_client.py", line 1242, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/programmerrez/miniconda3/envs/ml_dl/lib/python3.12/site-packages/groq/_base_client.py", line 1044, in request
+    raise self._make_status_error_from_response(err.response) from None
+groq.BadRequestError: Error code: 400 - {'error': {'message': 'tool call validation failed: parameters for tool DocumentValidation did not match schema: errors: [`/validated_label`: value must be one of "invoice", "contract", "w2_form", "medical_record", "insurance_claim", "purchase_order", "unknown"]', 'type': 'invalid_request_error', 'code': 'tool_use_failed', 'failed_generation': '<function=DocumentValidation>{"validated_label": "resume", "classifier_confidence": 0.9, "validation_decision": "VALID", "matched_rules": [], "missing_required_rules": [], "forbidden_rule_hits": [], "justification": "No validation rules provided to evaluate the document against."} </function>'}}
+2026-04-18 19:19:42,766 - INFO - project_1 - 🧠 Initializing document pipeline (one-time setup)
+2026-04-18 19:19:42,988 - INFO - project_1 - Creating validation chain...
+2026-04-18 19:19:43,056 - INFO - project_1 - Validation chain created successfully.
+2026-04-18 19:19:45,330 - INFO - project_1 - 📄 Extracting file: Data/Muhammad_Umar_Resume.pdf
+2026-04-18 19:19:45,393 - INFO - project_1 - ✅ Extraction complete | chunks=2
+2026-04-18 19:19:46,217 - INFO - project_1 - Starting document validation | label=resume confidence=0.90 ambiguous=False
+2026-04-18 19:19:46,780 - INFO - project_1 - Validation completed | decision=VALID
+2026-04-18 19:19:46,780 - INFO - project_1 - Routing decision requested | state={'document_id': '404ea899-0609-472f-bb09-b35ac1430555', 'file_path': 'Data/Muhammad_Umar_Resume.pdf', 'document_content': [Document(metadata={'producer': 'ReportLab PDF Library - www.reportlab.com', 'creator': '(unspecified)', 'creationdate': '2025-09-16T15:05:01+00:00', 'author': '(anonymous)', 'keywords': '', 'moddate': '2025-09-16T15:05:01+00:00', 'subject': '(unspecified)', 'title': '(anonymous)', 'trapped': '/False', 'source': '/tmp/tmp8eh0cdad.pdf', 'total_pages': 1, 'page': 0, 'page_label': '1'}, page_content='Muhammad Umar\nMalaysia | [your email] | [your number]\nLinkedIn: www.linkedin.com/in/muhammad-umar-3b7b7b378 | GitHub: github.com/ProgrammerRez |\nHugging Face Spaces: [your API/demo link]\nProfessional Summary\nJunior Machine Learning & Python Developer specializing in Data Science, LLM-powered agents, and\nML deployments. Hands-on experience in feature engineering, model evaluation, and agentic workflows\nwith LangChain. Built and deployed 7+ projects — including prediction models, document analyzers, AI\nagents, and APIs on Hugging Face Spaces. Seeking Data Scientist / ML Engineer roles where I can\nleverage problem-solving, deployment, and Agentic AI expertise.\nCore Skills\nLanguages: Python (Expert), SQL (Intermediate)\nLibraries & Frameworks: NumPy, Pandas, Scikit-learn, Matplotlib, Seaborn, NLTK, LangChain,\nHuggingFace Transformers\nML Techniques: Regression, Classification, Feature Engineering, Cross-validation, Model Evaluation\n(MAE, RMSE), Hyperparameter Tuning, SHAP Interpretability\nDeployment & Tools: Streamlit, Hugging Face Spaces, Gradio, FastAPI, Git/GitHub, Docker (basic),\nREST API\nOther: Data Visualization, RAG pipelines, Agentic Workflows, NLP\nKey Projects\nAgentic AI Assistant (LangChain + Groq + DuckDuckGo/Arxiv Search) (2025)\nDeveloped an Agentic AI research assistant using LangChain agents and external tool integrations.\nDesigned pipelines for retrieval, reasoning, summarization, powered by ChatGroq. Deployed interactive\nStreamlit app for live academic research.\nRAG AI Bot (PDF & Docs QA System) (2025)\nBuilt a Retrieval-Augmented Generation (RAG) chatbot for document Q&A.; Integrated Hugging Face\nembeddings + Vector DB for semantic search. Delivered contextual responses with LangChain pipeline,\ndeployed on Streamlit.\nAI Agents Search Engine (2025)\nDeveloped multi-tool search platform with LangChain agents. Aggregates results from Arxiv, Wikipedia,\nand Web search with reasoning. Accessible as a Streamlit Cloud app for research use cases.'), Document(metadata={'producer': 'ReportLab PDF Library - www.reportlab.com', 'creator': '(unspecified)', 'creationdate': '2025-09-16T15:05:01+00:00', 'author': '(anonymous)', 'keywords': '', 'moddate': '2025-09-16T15:05:01+00:00', 'subject': '(unspecified)', 'title': '(anonymous)', 'trapped': '/False', 'source': '/tmp/tmp8eh0cdad.pdf', 'total_pages': 1, 'page': 0, 'page_label': '1'}, page_content='Developed multi-tool search platform with LangChain agents. Aggregates results from Arxiv, Wikipedia,\nand Web search with reasoning. Accessible as a Streamlit Cloud app for research use cases.\nUsed Car Price Prediction Chatbot (2025)\nPredicted car resale values using regression models and feature engineering. Reduced MAE by\n~12–18% vs baseline models. Deployed chatbot on Streamlit for instant pricing.\nReal Estate Price Prediction Model (2025)\nBuilt ML pipeline for property price forecasting. Reduced RMSE by 10–15% after hyperparameter\ntuning. Added SHAP explainability for transparency.\nFile Analyzing Chatbot (2024)\nDesigned NLP-based chatbot for PDF summarization & keyword extraction. Implemented preprocessing\npipeline with NLTK. Deployed as Streamlit chatbot for faster document review.\nDeployed API on Hugging Face Spaces (2024)\nWrapped ML model in FastAPI/Gradio and hosted on Hugging Face Spaces. Added model card + usage\nexamples for reproducibility. Showcased ability to deliver ML solutions as scalable APIs.\nEducation\nData Science Degree — Analytix Camp (2025)')], 'document_type': 'resume', 'confidence_score': 0.9, 'classification_details': {'pass': 1, 'reasoning': "The document contains keywords such as 'Professional Summary', 'Core Skills', 'Key Projects', and 'LinkedIn' which are typical of a resume. The structure and content also match that of a resume.", 'key_indicators': ['Professional Summary', 'Core Skills', 'Key Projects', 'LinkedIn'], 'alternative_types': ['contract', 'invoice'], 'ambiguous': False}} error=None
+2026-04-18 19:19:46,781 - INFO - project_1 - Document accepted by routing logic

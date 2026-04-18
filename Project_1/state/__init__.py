@@ -113,6 +113,7 @@ class DocumentValidation(BaseModel):
         "medical_record",
         "insurance_claim",
         "purchase_order",
+        "resume",
         "unknown"
     ] = Field(
         description="The label being validated. This must match the upstream classifier output."
