@@ -15,6 +15,7 @@ Document Types You Can Classify:
 - insurance_claim: Claim #, policy #, incident details, coverage info
 - purchase_order: PO number, vendor, line items, delivery date, approval
 - resume: Has LinkedIn, professional credentials, and experience
+- unknown: Can't judge and very ambiguous.
 """
 
 
